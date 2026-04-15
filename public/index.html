@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veri Casita Hunter V2</title>
+  <style>
+    :root{
+      --bg:#0b1020;--panel:#121933;--panel2:#182246;--text:#eef2ff;--muted:#a7b0d6;--accent:#78c4ff;--accent2:#c084fc;--border:#28345f;
+      --good:#8ef0b5;--warn:#ffd479;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#09101f,#0f1731 40%,#0b1020);color:var(--text)}
+    .wrap{max-width:1280px;margin:0 auto;padding:24px}
+    .hero,.toolbar,.notice{background:rgba(18,25,51,.92);border:1px solid var(--border);border-radius:24px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+    .hero{margin-bottom:18px}
+    .toolbar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto auto;gap:12px;margin-bottom:16px}
+    .notice{margin-bottom:16px;color:var(--muted)}
+    h1{margin:0 0 10px;font-size:clamp(1.8rem,4vw,3rem)}
+    .sub{margin:0;color:var(--muted);max-width:920px;line-height:1.5}
+    .pill-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .pill{padding:10px 14px;border-radius:999px;background:#0e1630;border:1px solid var(--border);color:var(--muted);font-size:.92rem}
+    .tool{display:flex;flex-direction:column;gap:8px}
+    label{font-size:.82rem;font-weight:700;color:var(--muted)}
+    input,select,button{width:100%;border-radius:12px;border:1px solid var(--border);background:#0e1630;color:var(--text);padding:12px;font-size:.95rem}
+    button{cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#08111f;border:none;font-weight:800}
+    button.secondary{background:#0e1630;color:var(--text);border:1px solid var(--border)}
+    .meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0 16px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .card{background:rgba(18,25,51,.92);border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+    .photo{width:100%;height:260px;object-fit:cover;background:#111827}
+    .content{padding:16px}
+    .address{margin:0 0 8px;font-size:1.2rem;line-height:1.25}
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .tag{border-radius:999px;border:1px solid var(--border);padding:7px 10px;font-size:.82rem;color:var(--muted);background:#0e1630}
+    .good{color:var(--good)}
+    .warn{color:var(--warn)}
+    .details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;margin:12px 0}
+    .details div{padding-top:10px;border-top:1px solid var(--border)}
+    .details strong{display:block;color:var(--muted);font-size:.72rem;text-transform:uppercase;margin-bottom:5px;letter-spacing:.04em}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .actions a{text-decoration:none;padding:10px 12px;border-radius:12px;font-weight:800}
+    .primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#08111f}
+    .ghost{background:#0e1630;color:var(--text);border:1px solid var(--border)}
+    .empty{background:rgba(18,25,51,.92);border:1px dashed var(--border);padding:28px;border-radius:22px;color:var(--muted);text-align:center}
+    @media (max-width:1100px){.toolbar{grid-template-columns:1fr 1fr 1fr}.grid{grid-template-columns:1fr}}
+    @media (max-width:760px){.toolbar{grid-template-columns:1fr}.details{grid-template-columns:1fr}.wrap{padding:14px}.photo{height:220px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Veri Casita Hunter V2</h1>
+      <p class="sub">Live-refresh version for Vercel. Designed so your mom can use it without turning into the Joker. Pulls at most 25 listings per refresh to avoid lighting API credits on fire.</p>
+      <div class="pill-row">
+        <div class="pill">25 listing cap per refresh</div>
+        <div class="pill">Vercel serverless ready</div>
+        <div class="pill">Photos + filters + CSV</div>
+        <div class="pill">Tub monarchy enforced</div>
+      </div>
+    </section>
+
+    <section class="notice" id="statusBox">Ready. Press refresh once deployed with your environment variables set.</section>
+
+    <section class="toolbar">
+      <div class="tool">
+        <label for="search">Search</label>
+        <input id="search" placeholder="Temecula, detached, tub, solar..." />
+      </div>
+      <div class="tool">
+        <label for="city">City</label>
+        <select id="city"><option value="">All cities</option></select>
+      </div>
+      <div class="tool">
+        <label for="entrance">Entrance</label>
+        <select id="entrance">
+          <option value="">All</option>
+          <option value="Detached">Detached guest house</option>
+          <option value="separate entrance">Separate entrance</option>
+          <option value="private">Private suite</option>
+        </select>
+      </div>
+      <div class="tool">
+        <label for="tub">Tub</label>
+        <select id="tub">
+          <option value="">All</option>
+          <option value="Confirmed">Confirmed</option>
+          <option value="soaking tub">Soaking tub</option>
+          <option value="bathtub">Bathtub</option>
+          <option value="full bathroom">Full bathroom</option>
+        </select>
+      </div>
+      <div class="tool">
+        <label>&nbsp;</label>
+        <button id="refreshBtn">Refresh listings</button>
+      </div>
+      <div class="tool">
+        <label>&nbsp;</label>
+        <button id="csvBtn" class="secondary">Download CSV</button>
+      </div>
+    </section>
+
+    <div class="meta">
+      <div id="count">No listings loaded yet</div>
+      <div>Default target areas: Temecula, Murrieta, Menifee. Separate entrance and tub clues prioritized.</div>
+    </div>
+
+    <section id="grid" class="grid"></section>
+  </div>
+
+<script>
+let listings = [];
+const searchEl = document.getElementById('search');
+const cityEl = document.getElementById('city');
+const entranceEl = document.getElementById('entrance');
+const tubEl = document.getElementById('tub');
+const refreshBtn = document.getElementById('refreshBtn');
+const csvBtn = document.getElementById('csvBtn');
+const grid = document.getElementById('grid');
+const count = document.getElementById('count');
+const statusBox = document.getElementById('statusBox');
+
+function setStatus(msg){ statusBox.textContent = msg; }
+function esc(v){ return String(v ?? ''); }
+
+function csvEscape(v){
+  const s = String(v ?? '');
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function fillCities(){
+  const existing = new Set(['']);
+  [...cityEl.options].forEach(o => existing.add(o.value));
+  [...new Set(listings.map(x => x.city).filter(Boolean))].sort().forEach(city => {
+    if(existing.has(city)) return;
+    const option = document.createElement('option');
+    option.value = city;
+    option.textContent = city;
+    cityEl.appendChild(option);
+  });
+}
+
+function tagClass(status){
+  const s = (status || '').toLowerCase();
+  if (s.includes('confirmed') || s.includes('soaking tub') || s.includes('bathtub')) return 'good';
+  if (s.includes('full bathroom') || s.includes('verify')) return 'warn';
+  return '';
+}
+
+function render(items){
+  count.textContent = `Showing ${items.length} listing${items.length === 1 ? '' : 's'}`;
+  grid.innerHTML = '';
+  if(!items.length){
+    grid.innerHTML = '<div class="empty">No matches. The filters are stronger than your enemies. Loosen one and continue.</div>';
+    return;
+  }
+  items.forEach(item => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <img class="photo" src="${esc(item.listing_photo)}" alt="${esc(item.address)}" loading="lazy" referrerpolicy="no-referrer" />
+      <div class="content">
+        <h2 class="address">${esc(item.address)}</h2>
+        <div class="tags">
+          <span class="tag">${esc(item.city)}</span>
+          <span class="tag">${esc(item.price)}</span>
+          <span class="tag">${esc(item.bed_bath)}</span>
+          <span class="tag ${tagClass(item.adu_tub_status)}">${esc(item.adu_tub_status)}</span>
+        </div>
+        <div class="details">
+          <div><strong>HOA</strong>${esc(item.hoa_costs)}</div>
+          <div><strong>Year Built</strong>${esc(item.year_built)}</div>
+          <div><strong>Solar</strong>${esc(item.solar_status)}</div>
+          <div><strong>Stories</strong>${esc(item.stories)}</div>
+          <div><strong>Separate Entrance</strong>${esc(item.separate_entrance)}</div>
+          <div><strong>Notes</strong>${esc(item.notes)}</div>
+        </div>
+        <div class="actions">
+          <a class="primary" href="${esc(item.link)}" target="_blank" rel="noopener noreferrer">Open listing</a>
+          <a class="ghost" href="${esc(item.listing_photo)}" target="_blank" rel="noopener noreferrer">Open photo</a>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function applyFilters(){
+  const q = searchEl.value.trim().toLowerCase();
+  const city = cityEl.value;
+  const entrance = entranceEl.value.toLowerCase();
+  const tub = tubEl.value.toLowerCase();
+
+  const filtered = listings.filter(item => {
+    const hay = JSON.stringify(item).toLowerCase();
+    const hitQ = !q || hay.includes(q);
+    const hitCity = !city || item.city === city;
+    const hitEntrance = !entrance || (item.separate_entrance || '').toLowerCase().includes(entrance);
+    const hitTub = !tub || (item.adu_tub_status || '').toLowerCase().includes(tub);
+    return hitQ && hitCity && hitEntrance && hitTub;
+  });
+  render(filtered);
+}
+
+async function refreshListings(){
+  setStatus('Refreshing listings… siphoning only up to 25 so the API credits survive.');
+  refreshBtn.disabled = true;
+  try {
+    const res = await fetch('/api/listings?limit=25');
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Refresh failed');
+    listings = data.listings || [];
+    fillCities();
+    applyFilters();
+    const cached = data.cached ? ' (served from cache)' : '';
+    setStatus(`Loaded ${listings.length} listing(s)${cached}. Last updated: ${data.updatedAt || 'unknown'}.`);
+  } catch (err) {
+    setStatus(`Could not refresh listings: ${err.message}`);
+  } finally {
+    refreshBtn.disabled = false;
+  }
+}
+
+function downloadCSV(){
+  const headers = ["Listing Photo","Address","Price","Link","Bed/Bath","ADU Tub Status","HOA Costs","Year Built","Solar Status","Stories","Separate Entrance","City","Notes"];
+  const rows = listings.map(item => [
+    item.listing_photo, item.address, item.price, item.link, item.bed_bath, item.adu_tub_status,
+    item.hoa_costs, item.year_built, item.solar_status, item.stories, item.separate_entrance, item.city, item.notes
+  ]);
+  const csv = [headers, ...rows].map(row => row.map(csvEscape).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'veri_casita_hunter_live.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+[searchEl, cityEl, entranceEl, tubEl].forEach(el => {
+  el.addEventListener('input', applyFilters);
+  el.addEventListener('change', applyFilters);
+});
+refreshBtn.addEventListener('click', refreshListings);
+csvBtn.addEventListener('click', downloadCSV);
+</script>
+</body>
+</html>
